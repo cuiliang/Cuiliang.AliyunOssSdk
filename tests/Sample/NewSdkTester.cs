@@ -48,11 +48,12 @@ namespace Sample
 
         
 
-            //// put file
-            //var file = @"D:\Work\Weixin\resource\IMG_1399.png";
-            //putResult = await client.PutObjectByFileNameAsync(bucket, "test_put_file.png", file);
-            //Console.WriteLine($"Put file object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
-
+            // put file
+            {
+                var file = @"D:\Work\Weixin\resource\IMG_1399.png";
+                var putResult = await client.PutObjectByFileNameAsync(bucket, "test_put_file.png", file);
+                Console.WriteLine($"Put file object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
+            }
 
             //// copy file
             //Console.WriteLine("\n\n===Copy Object=============");
