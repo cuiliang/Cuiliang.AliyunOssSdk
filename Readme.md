@@ -10,7 +10,7 @@ nuget: https://www.nuget.org/packages/Cuiliang.AliyunOssSdk/
 ## 使用方法
 
 
-···
+```
 var crediential = new OssCredential()
 {
     AccessKeyId = AccessKeyId,
@@ -31,7 +31,7 @@ var crediential = new OssCredential()
     Console.WriteLine($"Put string object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
     
 
-···
+```
 
 
 ## API 接口实现
