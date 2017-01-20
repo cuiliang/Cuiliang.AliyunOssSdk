@@ -7,7 +7,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <RepositoryUrl></RepositoryUrl>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Authors>cuiliang.bj@gmail.com</Authors>
     <Description>Aliyun oss sdk for dotnet core.</Description>
     <PackageTags>Aliyun</PackageTags>
