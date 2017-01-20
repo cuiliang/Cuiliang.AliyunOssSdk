@@ -1,9 +1,38 @@
 ﻿# 概述
-这是一个简化版的oss sdk，目前只包含少数的api支持。
+这是一个面向dotnet core的简化版的oss sdk，目前只包含部分的api支持。
 部门代码从官方sdk移植，部分代码整体重构。
 重构的目的主要是为了简化代码，支持async模式。
 
+nuget: https://www.nuget.org/packages/Cuiliang.AliyunOssSdk/
+
 # 主要类说明
+
+## 使用方法
+
+
+```
+var crediential = new OssCredential()
+{
+    AccessKeyId = AccessKeyId,
+    AccessKeySecret = AssessSecret
+};
+
+    var client = new OssClient(crediential);
+
+    //list buckets
+    var listBucketResult = await client.ListBucketsAsync(OssRegions.ShangHai);
+    Console.WriteLine(listBucketResult.IsSuccess + ":" + listBucketResult.ErrorMessage);
+
+    var bucket = BucketInfo.CreateByRegion("oss-cn-shanghai.aliyuncs.com", "bucket", false, false);
+
+    // save string to a file
+    string content = "这是一个文本文件\naaaaaaaa\nbbbbbb\nccccccccc";
+    var putResult = await client.PutObjectAsync(bucket, "test_put_object_string.txt", content);
+    Console.WriteLine($"Put string object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
+    
+
+```
+
 
 ## API 接口实现
 
