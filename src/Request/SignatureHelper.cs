@@ -59,7 +59,7 @@ namespace Cuiliang.AliyunOssSdk.Request
             var strToSign =
                 $"{httpMethod.ToUpper()}\n{contentMd5}\n{contentType}\n{date}\n{canonicalizedOSSHeaders}{canonicalizedResource}";
 
-            Console.WriteLine("String to sign:" + strToSign);
+            //Console.WriteLine("String to sign:" + strToSign);
 
             return HmacSha1Sign(accessKeySecret, strToSign);
         }

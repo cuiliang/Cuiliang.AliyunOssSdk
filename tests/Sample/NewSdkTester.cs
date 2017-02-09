@@ -10,14 +10,14 @@ namespace Sample
 {
     class NewSdkTester
     {
-        public static string AccessKeyId = "";  // 设置您的AccessKeyId
+        public static string AccessKeyId = "******";  // 设置您的AccessKeyId
+        internal static string AssessSecret = "******"; //设置您的AssessSecret
+        internal static string BucketName = "testbucket"; //设置要操作的BucketName
 
-        internal static string AssessSecret = ""; //设置您的AssessSecret
-
-        internal static string EndPoint = "oss-cn-shanghai.aliyuncs.com";  //设置要操作的区域
+        internal static string Region = OssRegions.ShangHai;  //设置要操作的区域
 
 
-        internal static string BucketName = ""; //设置要操作的BucketName
+        
 
 
         public static async Task RunAsync()
@@ -37,7 +37,7 @@ namespace Sample
             //var listBucketResult = await client.ListBucketsAsync(OssRegions.ShangHai);
             //Console.WriteLine(listBucketResult.IsSuccess + ":" + listBucketResult.ErrorMessage);
 
-            var bucket = BucketInfo.CreateByRegion(EndPoint, BucketName, false, false);
+            var bucket = BucketInfo.CreateByRegion(Region, BucketName, false, false);
 
             // put string
             {
