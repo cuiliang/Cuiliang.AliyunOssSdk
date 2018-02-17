@@ -16,6 +16,7 @@ namespace Cuiliang.AliyunOssSdk.Request
     /// </summary>
     public class ServiceCaller
     {
+        private readonly static HttpClient _client = new HttpClient();
         private RequestContext _requestContext;
 
         public ServiceCaller(RequestContext requestContext)
@@ -29,52 +30,15 @@ namespace Cuiliang.AliyunOssSdk.Request
         /// <param name="serviceRequest"></param>
         /// <returns></returns>
         public async Task<HttpResponseMessage> CallServiceAsync(ServiceRequest serviceRequest)
-        {
-            //
-            HttpClient client = null;
-
-            
-
-            //
-            // setup proxy
-            // 
-            if (!string.IsNullOrWhiteSpace(_requestContext.ClientConfiguration.ProxyHost))
-            {
-                HttpClientHandler httpClientHandler = new HttpClientHandler()
-                {
-                    Proxy = new MyProxy(string.Format("{0}:{1}", _requestContext.ClientConfiguration.ProxyHost, _requestContext.ClientConfiguration.ProxyPort)),
-                    PreAuthenticate = false,
-                    UseDefaultCredentials = true,
-                };
-
-                if (!String.IsNullOrEmpty(_requestContext.ClientConfiguration.ProxyUserName))
-                {
-                    httpClientHandler.Proxy.Credentials = String.IsNullOrEmpty(_requestContext.ClientConfiguration.ProxyDomain)
-                        ? new NetworkCredential(_requestContext.ClientConfiguration.ProxyUserName, _requestContext.ClientConfiguration.ProxyPassword ?? string.Empty)
-                        : new NetworkCredential(_requestContext.ClientConfiguration.ProxyUserName, _requestContext.ClientConfiguration.ProxyPassword ?? string.Empty,
-                            _requestContext.ClientConfiguration.ProxyDomain);
-
-                    httpClientHandler.UseDefaultCredentials = false;
-                    httpClientHandler.PreAuthenticate = true;
-                }
-
-                client = new HttpClient(httpClientHandler);
-            }
-            else
-            {
-                client = new HttpClient();
-            }
-
-
+        {           
             var request = new HttpRequestMessage(serviceRequest.HttpMethod,
                 serviceRequest.BuildRequestUri(_requestContext));
 
             //
             // setup headers
             //
-
             // 超时时间，毫秒
-            client.Timeout = TimeSpan.FromMilliseconds(_requestContext.ClientConfiguration.ConnectionTimeout);
+            _client.Timeout = TimeSpan.FromMilliseconds(_requestContext.ClientConfiguration.ConnectionTimeout);
             foreach (var h in serviceRequest.Headers)
             {
                 bool rtn = request.Headers.TryAddWithoutValidation(h.Key, h.Value);
@@ -86,14 +50,12 @@ namespace Cuiliang.AliyunOssSdk.Request
 
             if (!string.IsNullOrWhiteSpace(_requestContext.ClientConfiguration.UserAgent))
             {
-                client.DefaultRequestHeaders.UserAgent.TryParseAdd(_requestContext.ClientConfiguration.UserAgent);
+                _client.DefaultRequestHeaders.UserAgent.TryParseAdd(_requestContext.ClientConfiguration.UserAgent);
 
             }
 
             // request content
-            //
-
-            
+            //            
 
             if (serviceRequest.RequestContentType !=  RequestContentType.None 
                 && (serviceRequest.HttpMethod == HttpMethod.Put || serviceRequest.HttpMethod == HttpMethod.Post))
@@ -118,11 +80,9 @@ namespace Cuiliang.AliyunOssSdk.Request
             // 因为传入的contenttype会被自动更改，所以在最后再进行签名处理
             SignatureHelper.SignRequest(serviceRequest, _requestContext.OssCredential, request);
 
-
-
             // 需要增加是因为objectMeta和head API返回的消息体是空的，但是content-length却是实际object的长度，此处违反了协议。
             // 使用默认参数会自动读取content，导致异常。
-            return await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            return await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         }
     }
 }
