@@ -80,8 +80,7 @@ namespace Cuiliang.AliyunOssSdk.Request
                 bool rtn = request.Headers.TryAddWithoutValidation(h.Key, h.Value);
                 if (rtn == false)
                 {
-                    //throw new InvalidOperationException("不支持的header:" + h.Key);
-                    Console.WriteLine("不支持的header:" + h.Key);
+                    throw new InvalidOperationException("不支持的header:" + h.Key);
                 }
             }
 
