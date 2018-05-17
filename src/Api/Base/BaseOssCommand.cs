@@ -67,14 +67,12 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
                 ServiceRequest request = BuildRequest();
 
                 //加入dateheader
-                request.Headers[HttpHeaders.Date] = DateUtils.FormatRfc822Date(DateTime.UtcNow);
-                
+                request.Headers[HttpHeaders.Date] = DateUtils.FormatRfc822Date(DateTime.UtcNow);                
 
                 if (RequestContext.OssCredential.UseToken)
                 {
                     request.Headers[HttpHeaders.SecurityToken] = RequestContext.OssCredential.SecurityToken;
                 }
-
 
                 // 发送请求
                 var caller = new ServiceCaller(RequestContext);
