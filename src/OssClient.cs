@@ -56,9 +56,9 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="key"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, RequestContent file)
+        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, RequestContent file, IDictionary<string, string> extraHeaders = null)
         {
-            var cmd = new PutObjectCommand(_requestContext, bucket, key, file, null);
+            var cmd = new PutObjectCommand(_requestContext, bucket, key, file, extraHeaders);
 
             return await cmd.ExecuteAsync();
         }
@@ -71,16 +71,17 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="content"></param>
         /// <param name="mimeType"></param>
         /// <returns></returns>
-        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, string content, string mimeType = "text/plain")
+        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, string content, string mimeType = "text/plain", ObjectMetadata meta = null, IDictionary<string, string> extraHeaders = null)
         {
             var file = new RequestContent()
             {
                 ContentType = RequestContentType.String,
                 StringContent = content,
-                MimeType = mimeType
+                MimeType = mimeType,
+                Metadata = meta
             };
 
-            return await PutObjectAsync(bucket, key, file);
+            return await PutObjectAsync(bucket, key, file, extraHeaders);
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="filePathName"></param>
         /// <returns></returns>
         public async Task<OssResult<PutObjectResult>> PutObjectByFileNameAsync(BucketInfo bucket, string key,
-            string filePathName)
+            string filePathName, ObjectMetadata meta = null, IDictionary<string, string> extraHeaders = null)
         {
             using (var stream = File.OpenRead(filePathName))
             {
@@ -99,10 +100,11 @@ namespace Cuiliang.AliyunOssSdk
                 {
                     ContentType = RequestContentType.Stream,
                     StreamContent = stream,
-                    MimeType = MimeHelper.GetMime(filePathName)
+                    MimeType = MimeHelper.GetMime(filePathName),
+                    Metadata = meta
                 };
 
-                return await PutObjectAsync(bucket, key, file);
+                return await PutObjectAsync(bucket, key, file, extraHeaders);
             }
         }
 
@@ -115,16 +117,17 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="mimeType"></param>
         /// <returns></returns>
         public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, Stream content,
-            string mimeType = "application/octet-stream")
+            string mimeType = "application/octet-stream", ObjectMetadata meta = null, IDictionary<string, string> extraHeaders = null)
         {
             var file = new RequestContent()
             {
                 ContentType = RequestContentType.String,
                 StreamContent = content,
-                MimeType = mimeType
+                MimeType = mimeType,
+                Metadata = meta
             };
 
-            return await PutObjectAsync(bucket, key, file);
+            return await PutObjectAsync(bucket, key, file, extraHeaders);
         }
 
 
