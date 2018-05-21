@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Api;
 using Cuiliang.AliyunOssSdk.Api.Bucket.List;
@@ -16,6 +17,7 @@ using Cuiliang.AliyunOssSdk.Api.Object.Put;
 using Cuiliang.AliyunOssSdk.Entites;
 using Cuiliang.AliyunOssSdk.Request;
 using Cuiliang.AliyunOssSdk.Utility;
+using Cuiliang.AliyunOssSdk.Utility.Authentication;
 
 namespace Cuiliang.AliyunOssSdk
 {
@@ -103,6 +105,28 @@ namespace Cuiliang.AliyunOssSdk
                 return await PutObjectAsync(bucket, key, file);
             }
         }
+
+        /// <summary>
+        /// 上传流
+        /// </summary>
+        /// <param name="bucket"></param>
+        /// <param name="key"></param>
+        /// <param name="content">内容流</param>
+        /// <param name="mimeType"></param>
+        /// <returns></returns>
+        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, Stream content,
+            string mimeType = "application/octet-stream")
+        {
+            var file = new RequestContent()
+            {
+                ContentType = RequestContentType.String,
+                StreamContent = content,
+                MimeType = mimeType
+            };
+
+            return await PutObjectAsync(bucket, key, file);
+        }
+
 
         /// <summary>
         /// 复制对象
@@ -204,6 +228,45 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new GetObjectMetaCommand(_requestContext, bucket, key);
             return await cmd.ExecuteAsync();
+        }
+
+        /// <summary>
+        /// 获取文件的下载链接
+        /// </summary>
+        /// <param name="storeKey"></param>
+        /// <param name="expireSeconds"></param>
+        /// <returns></returns>
+        public string GetFileDownloadLink(BucketInfo bucket, string storeKey, int expireSeconds)
+        {
+            long seconds = (DateTime.UtcNow.Ticks - 621355968000000000) / 10000000;
+
+            string toSign = String.Format("GET\n\n\n{0}\n/{1}/{2}", seconds, bucket, storeKey);
+
+            string sign = ServiceSignature.Create().ComputeSignature(
+                _requestContext.OssCredential.AccessKeyId, toSign);
+
+            string url = String.Format("{0}{1}/{2}?OSSAccessKeyId={3}&Expires={4}&Signature={5}",
+                bucket.EndpointUri,
+                bucket,
+                storeKey,
+                _requestContext.OssCredential.AccessKeyId,
+                seconds,
+                WebUtility.UrlEncode(sign));
+
+            return url;
+        }
+
+        /// <summary>
+        /// 生成直接post到oss的签名
+        /// </summary>
+        /// <param name="policy"></param>
+        /// <returns></returns>
+        public string ComputePostSignature(string policy)
+        {
+            string sign = ServiceSignature.Create().ComputeSignature(
+                _requestContext.OssCredential.AccessKeyId, policy);
+
+            return sign;
         }
     }
 }

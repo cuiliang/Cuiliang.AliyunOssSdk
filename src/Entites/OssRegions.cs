@@ -17,6 +17,14 @@
         // 华北 2
         public const string BeiJing = "oss-cn-beijing";
 
+        // 华北3 张家口
+        public const string ZhangJiaKou = "oss-cn-zhangjiakou";
+        
+        // 华北5 呼和浩特
+        public const string HuHeHaoTe = "oss-cn-huhehaote";
+
+
+
         // 华南 1
         public const string ShenZhen = "oss-cn-shenzhen";
 
