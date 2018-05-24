@@ -121,7 +121,7 @@ namespace Cuiliang.AliyunOssSdk
         {
             var file = new RequestContent()
             {
-                ContentType = RequestContentType.String,
+                ContentType = RequestContentType.Stream,
                 StreamContent = content,
                 MimeType = mimeType,
                 Metadata = meta
