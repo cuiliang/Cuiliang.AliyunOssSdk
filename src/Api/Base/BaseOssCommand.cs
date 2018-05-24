@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Api.Common.Consts;
 using Cuiliang.AliyunOssSdk.Entites;
@@ -116,9 +118,14 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
                 //错误的http代码
                 if (response.Content?.Headers.ContentLength > 0)
                 {
+                    //var responseContent = await response.Content.ReadAsStreamAsync();
+                    //var errorResult =
+                    //    SerializeHelper.Deserialize<ErrorResult>(responseContent);
+
+                    var responseContent = await response.Content.ReadAsStringAsync();
                     var errorResult =
-                        SerializeHelper.Deserialize<ErrorResult>(await response.Content.ReadAsStreamAsync());
-                    
+                        SerializeHelper.Deserialize<ErrorResult>(responseContent);
+
                     return new OssResult<TResult>()
                     {
                         IsSuccess = false,
