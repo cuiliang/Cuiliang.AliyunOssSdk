@@ -243,18 +243,12 @@ namespace Cuiliang.AliyunOssSdk
         {
             long seconds = (DateTime.UtcNow.Ticks - 621355968000000000) / 10000000;
 
-            string toSign = String.Format("GET\n\n\n{0}\n/{1}/{2}", seconds, bucket, storeKey);
+            string toSign = String.Format("GET\n\n\n{0}\n/{1}/{2}", seconds, bucket.BucketName, storeKey);
 
             string sign = ServiceSignature.Create().ComputeSignature(
                 _requestContext.OssCredential.AccessKeyId, toSign);
 
-            string url = String.Format("{0}{1}/{2}?OSSAccessKeyId={3}&Expires={4}&Signature={5}",
-                bucket.EndpointUri,
-                bucket,
-                storeKey,
-                _requestContext.OssCredential.AccessKeyId,
-                seconds,
-                WebUtility.UrlEncode(sign));
+            string url = $"{bucket.BucketUri}/{storeKey}?OSSAccessKeyId={_requestContext.OssCredential.AccessKeyId}&Expires={seconds}&Signature={WebUtility.UrlEncode(sign)}";
 
             return url;
         }

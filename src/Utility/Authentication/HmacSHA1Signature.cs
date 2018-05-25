@@ -24,10 +24,17 @@ namespace Cuiliang.AliyunOssSdk.Utility.Authentication
         {
             Debug.Assert(!string.IsNullOrEmpty(data));
 
-            using (var algorithm = KeyedHashAlgorithm.Create(
-                SignatureMethod.ToString().ToUpperInvariant()))
+            //using (var algorithm = KeyedHashAlgorithm.Create(
+            //    SignatureMethod.ToString().ToUpperInvariant()))
+            //{
+            //    algorithm.Key = _encoding.GetBytes(key.ToCharArray());
+            //    return Convert.ToBase64String(
+            //        algorithm.ComputeHash(_encoding.GetBytes(data.ToCharArray())));
+            //}
+
+            using (var algorithm = new HMACSHA1(_encoding.GetBytes(key.ToCharArray())))
             {
-                algorithm.Key = _encoding.GetBytes(key.ToCharArray());
+                //algorithm.Key = _encoding.GetBytes(key.ToCharArray());
                 return Convert.ToBase64String(
                     algorithm.ComputeHash(_encoding.GetBytes(data.ToCharArray())));
             }
