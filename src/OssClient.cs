@@ -236,19 +236,26 @@ namespace Cuiliang.AliyunOssSdk
         /// <summary>
         /// 获取文件的下载链接
         /// </summary>
-        /// <param name="storeKey"></param>
-        /// <param name="expireSeconds"></param>
+        /// <param name="bucket">bucket信息</param>
+        /// <param name="storeKey">文件存储key</param>
+        /// <param name="expireSeconds">签名超时时间秒数</param>
+        /// <param name="imgStyle">阿里云图片处理样式</param>
         /// <returns></returns>
-        public string GetFileDownloadLink(BucketInfo bucket, string storeKey, int expireSeconds)
+        public string GetFileDownloadLink(BucketInfo bucket, string storeKey, int expireSeconds, string imgStyle = null)
         {
-            long seconds = (DateTime.UtcNow.Ticks - 621355968000000000) / 10000000;
+            long seconds = (DateTime.UtcNow.AddSeconds(expireSeconds).Ticks - 621355968000000000) / 10000000;
 
             string toSign = String.Format("GET\n\n\n{0}\n/{1}/{2}", seconds, bucket.BucketName, storeKey);
+            if (!String.IsNullOrEmpty(imgStyle))
+            {
+                toSign += $"?x-oss-process=style/{imgStyle}";
+            }
 
             string sign = ServiceSignature.Create().ComputeSignature(
-                _requestContext.OssCredential.AccessKeyId, toSign);
+                _requestContext.OssCredential.AccessKeySecret, toSign);
 
-            string url = $"{bucket.BucketUri}/{storeKey}?OSSAccessKeyId={_requestContext.OssCredential.AccessKeyId}&Expires={seconds}&Signature={WebUtility.UrlEncode(sign)}";
+            string styleSegment = String.IsNullOrEmpty(imgStyle) ? String.Empty : $"x-oss-process=style/{imgStyle}&";
+            string url = $"{bucket.BucketUri}{storeKey}?{styleSegment}OSSAccessKeyId={_requestContext.OssCredential.AccessKeyId}&Expires={seconds}&Signature={WebUtility.UrlEncode(sign)}";
 
             return url;
         }

@@ -32,11 +32,17 @@ namespace Cuiliang.AliyunOssSdk.Utility.Authentication
             //        algorithm.ComputeHash(_encoding.GetBytes(data.ToCharArray())));
             //}
 
-            using (var algorithm = new HMACSHA1(_encoding.GetBytes(key.ToCharArray())))
+            var bytes = _encoding.GetBytes(key);
+            Trace.WriteLine("Key:" + key + " Data:" + data);
+            Trace.WriteLine(bytes);
+
+            using (var algorithm = new HMACSHA1(_encoding.GetBytes(key)))
             {
                 //algorithm.Key = _encoding.GetBytes(key.ToCharArray());
-                return Convert.ToBase64String(
+                var result = Convert.ToBase64String(
                     algorithm.ComputeHash(_encoding.GetBytes(data.ToCharArray())));
+                Trace.WriteLine("Result:" + result);
+                return result;
             }
         }
     }
