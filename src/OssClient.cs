@@ -268,7 +268,7 @@ namespace Cuiliang.AliyunOssSdk
         public string ComputePostSignature(string policy)
         {
             string sign = ServiceSignature.Create().ComputeSignature(
-                _requestContext.OssCredential.AccessKeyId, policy);
+                _requestContext.OssCredential.AccessKeySecret, policy);
 
             return sign;
         }
