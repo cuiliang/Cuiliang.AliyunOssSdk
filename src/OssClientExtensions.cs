@@ -11,34 +11,17 @@ namespace Cuiliang.AliyunOssSdk
     public static class OssClientExtensions
     {
         public static IServiceCollection AddOssClient(this IServiceCollection services,
-        Action<OssCredential> optionsAction,
-        ClientConfiguration config = null)
+        IConfigurationSection ossClientConf, ClientConfiguration config = null)
         {
-
             var credential = new OssCredential();
-            optionsAction?.Invoke(credential);
+            ossClientConf.Bind(credential);
+
             var requestContext = new RequestContext(credential, config ?? ClientConfiguration.Default);
 
             services.AddSingleton<RequestContext>(requestContext);
             services.AddHttpClient<OssClient>();
 
             return services;
-        }
-
-        public static IServiceCollection AddOssClient(this IServiceCollection services,
-        IConfigurationSection ossClientConf,
-        ClientConfiguration config = null)
-        {
-            var ossClientOptions = new OssClientOptions();
-            ossClientConf.Bind(ossClientOptions);
-
-            return
-            AddOssClient(services, options =>
-            {
-                options.AccessKeyId = ossClientOptions.AccessKeyId;
-                options.AccessKeySecret = ossClientOptions.AccessKeySecret;
-                options.SecurityToken = ossClientOptions.SecurityToken;
-            }, config);
         }
     }
 }
