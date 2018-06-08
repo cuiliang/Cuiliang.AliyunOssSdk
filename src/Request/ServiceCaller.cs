@@ -38,7 +38,13 @@ namespace Cuiliang.AliyunOssSdk.Request
             // setup headers
             //
             // 超时时间，毫秒
-            _client.Timeout = TimeSpan.FromMilliseconds(_requestContext.ClientConfiguration.ConnectionTimeout);
+            //httpclient 默认100s
+            // httpclient的 BaseAddress TimeOut MaxResponseContentBufferSize 属性 只能被设置一次
+            //第二次设置就会出现异常：
+            //“This instance has already started one or more requests. 
+            // Properties can only be modified before sending the first request.”
+            if (_requestContext.ClientConfiguration.ConnectionTimeout != -1)
+                _client.Timeout = TimeSpan.FromMilliseconds(_requestContext.ClientConfiguration.ConnectionTimeout);
             foreach (var h in serviceRequest.Headers)
             {
                 bool rtn = request.Headers.TryAddWithoutValidation(h.Key, h.Value);
