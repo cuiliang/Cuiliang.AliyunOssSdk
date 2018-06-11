@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Api;
 using Cuiliang.AliyunOssSdk.Api.Bucket.List;
