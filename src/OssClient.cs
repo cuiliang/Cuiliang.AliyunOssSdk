@@ -17,6 +17,7 @@ using Cuiliang.AliyunOssSdk.Api.Object.Put;
 using Cuiliang.AliyunOssSdk.Entites;
 using Cuiliang.AliyunOssSdk.Request;
 using Cuiliang.AliyunOssSdk.Utility;
+using Cuiliang.AliyunOssSdk.Utility.Authentication;
 
 namespace Cuiliang.AliyunOssSdk
 {
@@ -51,9 +52,9 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="key"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, RequestContent file)
+        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, RequestContent file, IDictionary<string, string> extraHeaders = null)
         {
-            var cmd = new PutObjectCommand(_requestContext, bucket, key, file, null);
+            var cmd = new PutObjectCommand(_requestContext, bucket, key, file, extraHeaders);
 
             return await cmd.ExecuteAsync(_client);
         }
@@ -66,16 +67,17 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="content"></param>
         /// <param name="mimeType"></param>
         /// <returns></returns>
-        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, string content, string mimeType = "text/plain")
+        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, string content, string mimeType = "text/plain", ObjectMetadata meta = null, IDictionary<string, string> extraHeaders = null)
         {
             var file = new RequestContent()
             {
                 ContentType = RequestContentType.String,
                 StringContent = content,
-                MimeType = mimeType
+                MimeType = mimeType,
+                Metadata = meta
             };
 
-            return await PutObjectAsync(bucket, key, file);
+            return await PutObjectAsync(bucket, key, file, extraHeaders);
         }
 
         /// <summary>
@@ -86,7 +88,7 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="filePathName"></param>
         /// <returns></returns>
         public async Task<OssResult<PutObjectResult>> PutObjectByFileNameAsync(BucketInfo bucket, string key,
-            string filePathName)
+            string filePathName, ObjectMetadata meta = null, IDictionary<string, string> extraHeaders = null)
         {
             using (var stream = File.OpenRead(filePathName))
             {
@@ -94,12 +96,36 @@ namespace Cuiliang.AliyunOssSdk
                 {
                     ContentType = RequestContentType.Stream,
                     StreamContent = stream,
-                    MimeType = MimeHelper.GetMime(filePathName)
+                    MimeType = MimeHelper.GetMime(filePathName),
+                    Metadata = meta
                 };
 
-                return await PutObjectAsync(bucket, key, file);
+                return await PutObjectAsync(bucket, key, file, extraHeaders);
             }
         }
+
+        /// <summary>
+        /// 上传流
+        /// </summary>
+        /// <param name="bucket"></param>
+        /// <param name="key"></param>
+        /// <param name="content">内容流</param>
+        /// <param name="mimeType"></param>
+        /// <returns></returns>
+        public async Task<OssResult<PutObjectResult>> PutObjectAsync(BucketInfo bucket, string key, Stream content,
+            string mimeType = "application/octet-stream", ObjectMetadata meta = null, IDictionary<string, string> extraHeaders = null)
+        {
+            var file = new RequestContent()
+            {
+                ContentType = RequestContentType.Stream,
+                StreamContent = content,
+                MimeType = mimeType,
+                Metadata = meta
+            };
+
+            return await PutObjectAsync(bucket, key, file, extraHeaders);
+        }
+
 
         /// <summary>
         /// 复制对象
@@ -201,6 +227,46 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new GetObjectMetaCommand(_requestContext, bucket, key);
             return await cmd.ExecuteAsync(_client);
+        }
+
+        /// <summary>
+        /// 获取文件的下载链接
+        /// </summary>
+        /// <param name="bucket">bucket信息</param>
+        /// <param name="storeKey">文件存储key</param>
+        /// <param name="expireSeconds">签名超时时间秒数</param>
+        /// <param name="imgStyle">阿里云图片处理样式</param>
+        /// <returns></returns>
+        public string GetFileDownloadLink(BucketInfo bucket, string storeKey, int expireSeconds, string imgStyle = null)
+        {
+            long seconds = (DateTime.UtcNow.AddSeconds(expireSeconds).Ticks - 621355968000000000) / 10000000;
+
+            string toSign = String.Format("GET\n\n\n{0}\n/{1}/{2}", seconds, bucket.BucketName, storeKey);
+            if (!String.IsNullOrEmpty(imgStyle))
+            {
+                toSign += $"?x-oss-process=style/{imgStyle}";
+            }
+
+            string sign = ServiceSignature.Create().ComputeSignature(
+                _requestContext.OssCredential.AccessKeySecret, toSign);
+
+            string styleSegment = String.IsNullOrEmpty(imgStyle) ? String.Empty : $"x-oss-process=style/{imgStyle}&";
+            string url = $"{bucket.BucketUri}{storeKey}?{styleSegment}OSSAccessKeyId={_requestContext.OssCredential.AccessKeyId}&Expires={seconds}&Signature={WebUtility.UrlEncode(sign)}";
+
+            return url;
+        }
+
+        /// <summary>
+        /// 生成直接post到oss的签名
+        /// </summary>
+        /// <param name="policy"></param>
+        /// <returns></returns>
+        public string ComputePostSignature(string policy)
+        {
+            string sign = ServiceSignature.Create().ComputeSignature(
+                _requestContext.OssCredential.AccessKeySecret, policy);
+
+            return sign;
         }
     }
 }

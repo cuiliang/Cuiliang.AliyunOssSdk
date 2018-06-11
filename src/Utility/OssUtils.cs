@@ -354,5 +354,10 @@ namespace Cuiliang.AliyunOssSdk.Utility
         //    if (string.IsNullOrEmpty(accessKeySecret))
         //        throw new ArgumentException(Resources.ExceptionIfArgumentStringIsNullOrEmpty, "accessKeySecret");
         //}
+
+        public static string TrimETag(string eTag)
+        {
+            return eTag != null ? eTag.Trim('\"') : null;
+        }
     }
 }

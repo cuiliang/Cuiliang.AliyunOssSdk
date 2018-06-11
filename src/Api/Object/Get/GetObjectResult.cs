@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
+using Cuiliang.AliyunOssSdk.Entites;
 
 namespace Cuiliang.AliyunOssSdk.Api.Object.Get
 {
@@ -9,6 +10,6 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Get
 
         public HttpContent Content { get; set; }
 
-        
+        public ObjectMetadata Metadata { get; set; }
     }
 }
