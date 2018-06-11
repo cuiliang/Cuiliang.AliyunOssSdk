@@ -16,12 +16,13 @@ namespace Cuiliang.AliyunOssSdk.Request
     /// </summary>
     public class ServiceCaller
     {
-        private readonly static HttpClient _client = new HttpClient();
         private RequestContext _requestContext;
+        private readonly HttpClient _client;
 
-        public ServiceCaller(RequestContext requestContext)
+        public ServiceCaller(RequestContext requestContext, HttpClient client)
         {
             _requestContext = requestContext;
+            _client = client;
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Cuiliang.AliyunOssSdk.Request
         /// <param name="serviceRequest"></param>
         /// <returns></returns>
         public async Task<HttpResponseMessage> CallServiceAsync(ServiceRequest serviceRequest)
-        {           
+        {
             var request = new HttpRequestMessage(serviceRequest.HttpMethod,
                 serviceRequest.BuildRequestUri(_requestContext));
 
@@ -63,19 +64,20 @@ namespace Cuiliang.AliyunOssSdk.Request
             // request content
             //            
 
-            if (serviceRequest.RequestContentType !=  RequestContentType.None 
+            if (serviceRequest.RequestContentType != RequestContentType.None
                 && (serviceRequest.HttpMethod == HttpMethod.Put || serviceRequest.HttpMethod == HttpMethod.Post))
             {
                 if (serviceRequest.RequestContentType == RequestContentType.String)
                 {
                     request.Content = new StringContent(serviceRequest.StringContent, Encoding.UTF8, serviceRequest.ContentMimeType);
-                }else if (serviceRequest.RequestContentType == RequestContentType.Stream)
+                }
+                else if (serviceRequest.RequestContentType == RequestContentType.Stream)
                 {
                     request.Content = new StreamContent(serviceRequest.StreamContent);
                     request.Content.Headers.ContentType =
                         MediaTypeHeaderValue.Parse(serviceRequest.ContentMimeType);
                 }
-                
+
             }
 
             if (serviceRequest.ContentMd5 != null && request.Content != null)

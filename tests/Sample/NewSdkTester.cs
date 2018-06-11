@@ -1,7 +1,10 @@
 ﻿using Cuiliang.AliyunOssSdk;
 using Cuiliang.AliyunOssSdk.Entites;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,50 +13,48 @@ namespace Sample
 {
     class NewSdkTester
     {
-        public static string AccessKeyId = "******";  // 设置您的AccessKeyId
-        internal static string AssessSecret = "******"; //设置您的AssessSecret
         internal static string BucketName = "testbucket"; //设置要操作的BucketName
 
-        internal static string Region = OssRegions.ShangHai;  //设置要操作的区域
-
-
-        
+        internal static string Region = OssRegions.HangZhou;  //设置要操作的区域
 
 
         public static async Task RunAsync()
         {
+            var conf = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile("appsettings.Development.json", true, true)
+                .Build();
 
+            IServiceCollection services = new ServiceCollection();
 
+            services.AddOssClient(conf.GetSection("ossClient"));
 
-            var crediential = new OssCredential()
-            {
-                AccessKeyId = AccessKeyId,
-                AccessKeySecret = AssessSecret
-            };
+            var sp = services.BuildServiceProvider();
 
-            var client = new OssClient(crediential);
+            var client = sp.GetService<OssClient>();
 
             ////list buckets
-            //var listBucketResult = await client.ListBucketsAsync(OssRegions.ShangHai);
-            //Console.WriteLine(listBucketResult.IsSuccess + ":" + listBucketResult.ErrorMessage);
+            var listBucketResult = await client.ListBucketsAsync(OssRegions.HangZhou);
+            Console.WriteLine(listBucketResult.IsSuccess + ":" + listBucketResult.ErrorMessage);
 
             var bucket = BucketInfo.CreateByRegion(Region, BucketName, false, false);
 
             // put string
-            {
-                string content = "这是一个文本文件\naaaaaaaa\nbbbbbb\nccccccccc";
-                var putResult = await client.PutObjectAsync(bucket, "test_put_object_string.txt", content);
-                Console.WriteLine($"Put string object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
-            }
+            // {
+            //     string content = "这是一个文本文件\naaaaaaaa\nbbbbbb\nccccccccc";
+            //     var putResult = await client.PutObjectAsync(bucket, "test_put_object_string.txt", content);
+            //     Console.WriteLine($"Put string object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
+            // }
 
-        
 
-            // put file
-            {
-                var file = @"D:\Work\Weixin\resource\IMG_1399.png";
-                var putResult = await client.PutObjectByFileNameAsync(bucket, "test_put_file.png", file);
-                Console.WriteLine($"Put file object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
-            }
+
+            // // put file
+            // {
+            //     var file = @"D:\Work\Weixin\resource\IMG_1399.png";
+            //     var putResult = await client.PutObjectByFileNameAsync(bucket, "test_put_file.png", file);
+            //     Console.WriteLine($"Put file object  {putResult.IsSuccess} {putResult.ErrorMessage}  Etag:{putResult.SuccessResult?.ETag}");
+            // }
 
             //// copy file
             //Console.WriteLine("\n\n===Copy Object=============");
@@ -138,32 +139,32 @@ namespace Sample
 
             // head object
             // delete multiple
-            Console.WriteLine("\n\n===head object=============");
-            {
-                var content = "This is a line 这是一行字符串.";
-                var key = "test_head_object.txt";
-                //var putResult = await client.PutObjectAsync(bucket, key, content);
-                //if (putResult.IsSuccess)
-                {
-                    var headResult = await client.HeadObjectAsync(bucket, key, null);
-                    Console.WriteLine($"Head object: {headResult.IsSuccess} {headResult.ErrorMessage}");
-                }
+            // Console.WriteLine("\n\n===head object=============");
+            // {
+            //     var content = "This is a line 这是一行字符串.";
+            //     var key = "test_head_object.txt";
+            //     //var putResult = await client.PutObjectAsync(bucket, key, content);
+            //     //if (putResult.IsSuccess)
+            //     {
+            //         var headResult = await client.HeadObjectAsync(bucket, key, null);
+            //         Console.WriteLine($"Head object: {headResult.IsSuccess} {headResult.ErrorMessage}");
+            //     }
 
-            }
+            // }
 
 
-            Console.WriteLine("\n\n===Get object meta=============");
-            {
-                //var content = "This is a line 这是一行字符串.";
-                var key = "test_get_meta_object.txt";
-                //var putResult = await client.PutObjectAsync(bucket, key, content);
-                //if (putResult.IsSuccess)
-                {
-                    var headResult = await client.GetObjectMetaAsync(bucket, key);
-                    Console.WriteLine($"Head object: {headResult.IsSuccess} {headResult.ErrorMessage}");
-                }
+            // Console.WriteLine("\n\n===Get object meta=============");
+            // {
+            //     //var content = "This is a line 这是一行字符串.";
+            //     var key = "test_get_meta_object.txt";
+            //     //var putResult = await client.PutObjectAsync(bucket, key, content);
+            //     //if (putResult.IsSuccess)
+            //     {
+            //         var headResult = await client.GetObjectMetaAsync(bucket, key);
+            //         Console.WriteLine($"Head object: {headResult.IsSuccess} {headResult.ErrorMessage}");
+            //     }
 
-            }
+            // }
 
         }
     }
