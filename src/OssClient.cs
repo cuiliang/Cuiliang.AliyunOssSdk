@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Api;
 using Cuiliang.AliyunOssSdk.Api.Bucket.List;
@@ -26,17 +26,13 @@ namespace Cuiliang.AliyunOssSdk
     /// </summary>
     public class OssClient
     {
-        private RequestContext _requestContext = null;
+        private readonly HttpClient _client;
+        private readonly RequestContext _requestContext;
 
-        public OssClient(OssCredential credential)
-            :this(credential, ClientConfiguration.Default)
+        public OssClient(HttpClient client, RequestContext requestContext)
         {
-            
-        }
-
-        public OssClient(OssCredential credential, ClientConfiguration config)
-        {
-            _requestContext = new RequestContext(credential, config);
+            _client = client;
+            _requestContext = requestContext;
         }
 
         /// <summary>
@@ -46,7 +42,7 @@ namespace Cuiliang.AliyunOssSdk
         public async Task<OssResult<ListBucketsResult>> ListBucketsAsync(string region)
         {
             var cmd = new ListBucketCommand(_requestContext, region, new ListBucketsRequest());
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -60,7 +56,7 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new PutObjectCommand(_requestContext, bucket, key, file, extraHeaders);
 
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -140,14 +136,14 @@ namespace Cuiliang.AliyunOssSdk
         /// <param name="targetKey"></param>
         /// <param name="extraHeaders"></param>
         /// <returns></returns>
-        public async Task<OssResult<CopyObjectResult>> CopyObjectAsync(BucketInfo bucket, string srcKey, 
+        public async Task<OssResult<CopyObjectResult>> CopyObjectAsync(BucketInfo bucket, string srcKey,
             BucketInfo targetBucket,
-            string targetKey, 
+            string targetKey,
             IDictionary<string, string> extraHeaders = null)
         {
             var cmd = new CopyObjectCommand(_requestContext, targetBucket, targetKey, bucket, srcKey, extraHeaders);
 
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -161,7 +157,7 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new GetObjectCommand(_requestContext, bucket, key, parameters);
 
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -177,7 +173,7 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new AppendObjectCommand(_requestContext, bucket, key, nextAppendPosition, file);
 
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -190,7 +186,7 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new DeleteObjectCommand(_requestContext, bucket, key);
 
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -205,7 +201,7 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new DeleteMultipleObjectsCommand(_requestContext, bucket, keys, quiet);
 
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -218,7 +214,7 @@ namespace Cuiliang.AliyunOssSdk
         public async Task<OssResult<HeadObjectResult>> HeadObjectAsync(BucketInfo bucket, string key, HeadObjectParams parameters)
         {
             var cmd = new HeadObjectCommand(_requestContext, bucket, key, parameters);
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
@@ -230,7 +226,7 @@ namespace Cuiliang.AliyunOssSdk
         public async Task<OssResult<GetObjectMetaResult>> GetObjectMetaAsync(BucketInfo bucket, string key)
         {
             var cmd = new GetObjectMetaCommand(_requestContext, bucket, key);
-            return await cmd.ExecuteAsync();
+            return await cmd.ExecuteAsync(_client);
         }
 
         /// <summary>
