@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cuiliang.AliyunOssSdk
 {
-    public static class OssClientExtensions
+    public static class OssClientServiceCollectionExtensions
     {
         public static IServiceCollection AddOssClient(
             this IServiceCollection services,
