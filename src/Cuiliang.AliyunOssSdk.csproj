@@ -1,12 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <Version>0.2.0</Version>
+    <PackageId>aliyun.sdk.oss</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>    
-    <Authors>cuiliang.bj@gmail.com</Authors>
-    <Description>Aliyun oss sdk for dotnet core.</Description>
+    <Description>Aliyun OSS SDK for .NET Core</Description>
     <PackageTags>Aliyun</PackageTags>
-    <RepositoryUrl>https://github.com/cuiliang/Cuiliang.AliyunOssSdk</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Cuiliang</Authors>
+    <PackageProjectUrl>https://github.com/cnblogs/Cuiliang.AliyunOssSdk</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
