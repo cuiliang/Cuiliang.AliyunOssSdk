@@ -10,8 +10,10 @@ namespace Cuiliang.AliyunOssSdk
 {
     public static class OssClientExtensions
     {
-        public static IServiceCollection AddOssClient(this IServiceCollection services,
-        IConfigurationSection ossClientConf, ClientConfiguration config = null)
+        public static IServiceCollection AddOssClient(
+            this IServiceCollection services,
+            IConfigurationSection ossClientConf, 
+            ClientConfiguration config = null)
         {
             var credential = new OssCredential();
             ossClientConf.Bind(credential);
