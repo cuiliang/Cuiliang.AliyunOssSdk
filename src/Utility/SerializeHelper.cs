@@ -29,6 +29,24 @@ namespace Cuiliang.AliyunOssSdk.Utility
         }
 
         /// <summary>
+        /// XML 文本 -》 对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stringContent"></param>
+        /// <returns></returns>
+        public static T Deserialize<T>(string stringContent)
+        {
+            var serializer = new XmlSerializer(typeof(T));
+
+            using (TextReader reader = new StringReader(stringContent))
+            {
+                return (T)serializer.Deserialize(reader);
+            }
+            
+
+        }
+
+        /// <summary>
         /// 将一个对象序列化为XML字符串
         /// </summary>
         /// <typeparam name="T"></typeparam>

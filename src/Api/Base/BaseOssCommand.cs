@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Api.Common.Consts;
 using Cuiliang.AliyunOssSdk.Entites;
@@ -42,7 +44,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
                 var result = SerializeHelper.Deserialize<TResult>(await response.Content.ReadAsStreamAsync());
                 var ossResult = new OssResult<TResult>()
                 {
-                    IsSuccess =  true,
+                    IsSuccess = true,
                     SuccessResult = result
                 };
 
@@ -51,7 +53,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
 
             return new OssResult<TResult>()
             {
-                IsSuccess =  false,
+                IsSuccess = false,
                 ErrorMessage = "ContentLength = 0"
             };
         }
@@ -60,24 +62,24 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
         /// 执行请求并返回结果
         /// </summary>
         /// <returns></returns>
-        public async Task<OssResult<TResult>> ExecuteAsync()
+        public async Task<OssResult<TResult>> ExecuteAsync(HttpClient client)
         {
             try
             {
                 ServiceRequest request = BuildRequest();
 
                 //加入dateheader
+
                 request.Headers[HttpHeaders.Date] = DateUtils.FormatRfc822Date(DateTime.UtcNow);
-                
+
 
                 if (RequestContext.OssCredential.UseToken)
                 {
                     request.Headers[HttpHeaders.SecurityToken] = RequestContext.OssCredential.SecurityToken;
                 }
 
-
                 // 发送请求
-                var caller = new ServiceCaller(RequestContext);
+                var caller = new ServiceCaller(RequestContext, client);
                 HttpResponseMessage response = await caller.CallServiceAsync(request);
 
                 // 解析结果
@@ -92,7 +94,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
                     ErrorMessage = ex.Message
                 };
             }
-            
+
         }
 
         /// <summary>
@@ -110,17 +112,25 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
             {
                 return new OssResult<TResult>()
                 {
-                    IsSuccess =  false,
+                    IsSuccess = false,
                     ErrorMessage = "NOT_MODIFIED"
                 };
-            }else
+            }
+            else
             {
                 //错误的http代码
                 if (response.Content?.Headers.ContentLength > 0)
                 {
+                    //var responseContent = await response.Content.ReadAsStreamAsync();
+                    //var errorResult =
+                    //    SerializeHelper.Deserialize<ErrorResult>(responseContent);
+
+                    var responseContent = await response.Content.ReadAsStringAsync();
                     var errorResult =
-                        SerializeHelper.Deserialize<ErrorResult>(await response.Content.ReadAsStreamAsync());
-                    
+
+                        SerializeHelper.Deserialize<ErrorResult>(responseContent);
+
+
                     return new OssResult<TResult>()
                     {
                         IsSuccess = false,
