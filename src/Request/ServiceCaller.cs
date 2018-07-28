@@ -16,7 +16,6 @@ namespace Cuiliang.AliyunOssSdk.Request
     /// </summary>
     public class ServiceCaller
     {
-        private readonly static HttpClient _client = new HttpClient();
         private RequestContext _requestContext;
         private readonly HttpClient _client;
 
