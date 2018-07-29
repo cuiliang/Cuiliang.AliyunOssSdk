@@ -19,9 +19,7 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <summary>
         /// 是否https访问方式
         /// </summary>
-        public bool IsHttps { get; private set; }
-
-      
+        public bool IsHttps { get; private set; }      
 
         /// <summary>
         /// Bucket名称
@@ -36,13 +34,10 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <summary>
         /// 带有bucket网址的uri
         /// </summary>
-        public Uri BucketUri { get; private set; }
-
-       
+        public Uri BucketUri { get; private set; }       
 
         private BucketInfo()
-        {
-        }
+        { }
 
         /// <summary>
         /// 使用自定义域名创建地址信息

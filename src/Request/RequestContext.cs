@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Entites;
+using Microsoft.Extensions.Options;
 
 namespace Cuiliang.AliyunOssSdk.Request
 {
@@ -11,9 +12,9 @@ namespace Cuiliang.AliyunOssSdk.Request
     /// </summary>
     public class RequestContext
     {
-        public RequestContext(OssCredential credential, ClientConfiguration config)
+        public RequestContext(IOptions<OssCredential> credentialOptions, ClientConfiguration config)
         {
-            OssCredential = credential;
+            OssCredential = credentialOptions.Value;
             ClientConfiguration = config;
         }
         /// <summary>
