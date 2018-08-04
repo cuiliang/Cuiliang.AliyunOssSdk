@@ -18,7 +18,10 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<ClientConfiguration> setupClientConfiguration = null,
             Action<HttpClient> configureHttpClient = null)
         {
-            services.Configure<OssCredential>(configuration.GetSection("ossClient"));
+            var section = (configuration as IConfigurationSection) == null ?
+                configuration.GetSection("ossClient") : configuration;
+
+            services.Configure<OssCredential>(section);
 
             var clientConfiguration = new ClientConfiguration();
             setupClientConfiguration?.Invoke(clientConfiguration);
