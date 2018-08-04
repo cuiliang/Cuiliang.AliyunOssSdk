@@ -14,35 +14,23 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Get
 {
     public class GetObjectCommand : BaseObjectCommand<GetObjectResult>
     {
-        
-
         public GetObjectParams Params { get; set; }
-
-
-
-        /// 
 
         public GetObjectCommand(
             RequestContext requestContext,
             BucketInfo bucket,
             string key,
-            GetObjectParams parameters
-            ) : base(requestContext, bucket, key)
+            GetObjectParams parameters) : base(requestContext, bucket, key)
         {
             Params = parameters;
         }
 
         public override ServiceRequest BuildRequest()
         {
-
             var req = new ServiceRequest(Bucket, Key, HttpMethod.Get);
-
             Params?.SetupRequest(req);
-
             return req;
         }
-
-
 
         public override async Task<OssResult<GetObjectResult>> ParseResultAsync(HttpResponseMessage response)
         {
@@ -60,7 +48,6 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Get
 
         private ObjectMetadata Deserialize(HttpResponseMessage response)
         {
-            
             var metadata = new ObjectMetadata();
             foreach (var header in response.Headers)
             {

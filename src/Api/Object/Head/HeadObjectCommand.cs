@@ -6,10 +6,8 @@ using Cuiliang.AliyunOssSdk.Request;
 
 namespace Cuiliang.AliyunOssSdk.Api.Object.Head
 {
-    public class HeadObjectCommand:BaseObjectCommand<HeadObjectResult>
+    public class HeadObjectCommand : BaseObjectCommand<HeadObjectResult>
     {
-        
-
         public HeadObjectCommand(RequestContext requestContext, BucketInfo bucket, string key, HeadObjectParams parameters) : base(requestContext, bucket, key)
         {
             Parameters = parameters;
@@ -26,12 +24,14 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Head
             return req;
         }
 
-        public override async Task<OssResult<HeadObjectResult>> ParseResultAsync(HttpResponseMessage response)
+        public override Task<OssResult<HeadObjectResult>> ParseResultAsync(HttpResponseMessage response)
         {
-            return new OssResult<HeadObjectResult>(new HeadObjectResult()
+            var result = new OssResult<HeadObjectResult>(new HeadObjectResult()
             {
                 Headers = response.Headers
             });
+
+            return Task.FromResult(result);
         }
     }
 }

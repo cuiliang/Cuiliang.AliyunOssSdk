@@ -21,15 +21,14 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.PutAcl
 
             req.Parameters.Add("acl", "");
 
-            //
             req.Headers.Add("x-oss-object-acl", AclType);
 
             return req;
         }
 
-        public override async Task<OssResult<EmptyResult>> ParseResultAsync(HttpResponseMessage response)
+        public override Task<OssResult<EmptyResult>> ParseResultAsync(HttpResponseMessage response)
         {
-            return new OssResult<EmptyResult>(new EmptyResult());
+            return Task.FromResult(new OssResult<EmptyResult>(new EmptyResult()));
         }
     }
 }

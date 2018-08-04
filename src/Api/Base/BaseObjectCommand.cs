@@ -7,7 +7,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
     /// 对某个对象进行的操作的命令基类，主要是保存了Bucket信息和key
     /// </summary>
     /// <typeparam name="TResult"></typeparam>
-    public abstract class BaseObjectCommand<TResult>: BaseOssCommand<TResult>
+    public abstract class BaseObjectCommand<TResult> : BaseOssCommand<TResult>
     {
         /// <summary>
         /// 对象所处的Bucket
@@ -19,7 +19,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
         /// </summary>
         public string Key { get; set; }
 
-        public BaseObjectCommand(RequestContext requestContext, 
+        public BaseObjectCommand(RequestContext requestContext,
             BucketInfo bucket,
             string key) : base(requestContext)
         {
