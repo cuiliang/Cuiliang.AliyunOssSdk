@@ -16,6 +16,16 @@ namespace Cuiliang.AliyunOssSdk.Request
         {
             OssCredential = credentialOptions.Value;
             ClientConfiguration = config;
+            
+            if(string.IsNullOrWhiteSpace(OssCredential.AccessKeyId))
+            {
+                throw new ArgumentNullException(nameof(OssCredential.AccessKeyId));
+            }
+
+            if (string.IsNullOrWhiteSpace(OssCredential.AccessKeySecret))
+            {
+                throw new ArgumentNullException(nameof(OssCredential.AccessKeySecret));
+            }
         }
         /// <summary>
         /// 客户端配置

@@ -19,9 +19,9 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Delete
             return req;
         }
 
-        public override async Task<OssResult<DeleteObjectResult>> ParseResultAsync(HttpResponseMessage response)
+        public override Task<OssResult<DeleteObjectResult>> ParseResultAsync(HttpResponseMessage response)
         {
-            return new OssResult<DeleteObjectResult>(new DeleteObjectResult());
+            return Task.FromResult(new OssResult<DeleteObjectResult>(new DeleteObjectResult()));
         }
     }
 }

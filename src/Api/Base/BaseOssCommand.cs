@@ -126,10 +126,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Base
                     //    SerializeHelper.Deserialize<ErrorResult>(responseContent);
 
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var errorResult =
-
-                        SerializeHelper.Deserialize<ErrorResult>(responseContent);
-
+                    var errorResult = SerializeHelper.Deserialize<ErrorResult>(responseContent);
 
                     return new OssResult<TResult>()
                     {

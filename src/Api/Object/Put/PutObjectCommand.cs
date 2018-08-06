@@ -27,10 +27,8 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Put
 
         public override ServiceRequest BuildRequest()
         {
-            var req = new ServiceRequest(Bucket, Key, HttpMethod.Put);
-           
+            var req = new ServiceRequest(Bucket, Key, HttpMethod.Put);           
 
-            // headers
             if (ExtraHeaders != null)
             {
                 foreach (var pair in ExtraHeaders)
@@ -41,7 +39,6 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Put
 
             RequestContent.Metadata?.Populate(req.Headers);
 
-            //
             req.ContentMd5 = RequestContent.ContentMd5;
 
             if (RequestContent.ContentType == RequestContentType.Stream)
@@ -60,7 +57,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Put
             return req;
         }
 
-        public override async Task<OssResult<PutObjectResult>> ParseResultAsync(HttpResponseMessage response)
+        public override Task<OssResult<PutObjectResult>> ParseResultAsync(HttpResponseMessage response)
         {
             var result = new PutObjectResult();
             if (response.Headers.Contains(HttpHeaders.ETag))
@@ -68,11 +65,11 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Put
                 result.ETag = OssUtils.TrimQuotes(response.Headers.ETag.ToString());
             }
 
-            return new OssResult<PutObjectResult>()
+            return Task.FromResult(new OssResult<PutObjectResult>()
             {
                 IsSuccess = true,
                 SuccessResult = result
-            };
+            });
         }
     }
 }
