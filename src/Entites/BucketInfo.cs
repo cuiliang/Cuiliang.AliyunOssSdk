@@ -69,20 +69,27 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <returns></returns>
         public static BucketInfo CreateByRegion(string region, string bucketName, bool useHttps = false, bool useInternal = false)
         {
-            var  baseDomain = useInternal? "-internal.aliyuncs.com" : ".aliyuncs.com";
-            var method = useHttps ? "https://" : "http://";
+            var uriBuilder = new UriBuilder();
+            uriBuilder.Scheme = useHttps ? "https" : "http";
+            uriBuilder.Host = region + (useInternal ? "-internal.aliyuncs.com" : ".aliyuncs.com");
 
             var bucket = new BucketInfo()
             {
                 IsCname = false,
                 BucketName = bucketName,
-                IsHttps = useHttps
+                IsHttps = useHttps,
+                EndpointUri = uriBuilder.Uri
             };
 
-            bucket.EndpointUri = new Uri(method + region + baseDomain);
-
-            // bucket名称为空的情况，直接访问oss
-            bucket.BucketUri = String.IsNullOrEmpty(bucketName)? bucket.EndpointUri : new Uri(method + bucketName + "." + region + baseDomain);
+            if(string.IsNullOrEmpty(bucketName))
+            {
+                bucket.BucketUri = bucket.EndpointUri;
+            }
+            else
+            {
+                uriBuilder.Host = bucketName + "." + uriBuilder.Host;
+                bucket.BucketUri = uriBuilder.Uri;
+            }
 
             return bucket;
         }
