@@ -6,6 +6,7 @@
     <PackageTags>Aliyun</PackageTags>
     <Authors>Cuiliang</Authors>
     <PackageProjectUrl>https://github.com/cnblogs/Cuiliang.AliyunOssSdk</PackageProjectUrl>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
