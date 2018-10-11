@@ -19,9 +19,7 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <summary>
         /// 是否https访问方式
         /// </summary>
-        public bool IsHttps { get; private set; }
-
-      
+        public bool IsHttps { get; private set; }      
 
         /// <summary>
         /// Bucket名称
@@ -36,13 +34,10 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <summary>
         /// 带有bucket网址的uri
         /// </summary>
-        public Uri BucketUri { get; private set; }
-
-       
+        public Uri BucketUri { get; private set; }       
 
         private BucketInfo()
-        {
-        }
+        { }
 
         /// <summary>
         /// 使用自定义域名创建地址信息
@@ -74,20 +69,27 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <returns></returns>
         public static BucketInfo CreateByRegion(string region, string bucketName, bool useHttps = false, bool useInternal = false)
         {
-            var  baseDomain = useInternal? "-internal.aliyuncs.com" : ".aliyuncs.com";
-            var method = useHttps ? "https://" : "http://";
+            var uriBuilder = new UriBuilder();
+            uriBuilder.Scheme = useHttps ? "https" : "http";
+            uriBuilder.Host = region + (useInternal ? "-internal.aliyuncs.com" : ".aliyuncs.com");
 
             var bucket = new BucketInfo()
             {
                 IsCname = false,
                 BucketName = bucketName,
-                IsHttps = useHttps
+                IsHttps = useHttps,
+                EndpointUri = uriBuilder.Uri
             };
 
-            bucket.EndpointUri = new Uri(method + region + baseDomain);
-
-            // bucket名称为空的情况，直接访问oss
-            bucket.BucketUri = String.IsNullOrEmpty(bucketName)? bucket.EndpointUri : new Uri(method + bucketName + "." + region + baseDomain);
+            if(string.IsNullOrEmpty(bucketName))
+            {
+                bucket.BucketUri = bucket.EndpointUri;
+            }
+            else
+            {
+                uriBuilder.Host = bucketName + "." + uriBuilder.Host;
+                bucket.BucketUri = uriBuilder.Uri;
+            }
 
             return bucket;
         }

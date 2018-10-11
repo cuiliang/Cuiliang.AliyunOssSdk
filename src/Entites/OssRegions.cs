@@ -24,7 +24,6 @@
         public const string HuHeHaoTe = "oss-cn-huhehaote";
 
 
-
         // 华南 1
         public const string ShenZhen = "oss-cn-shenzhen";
 

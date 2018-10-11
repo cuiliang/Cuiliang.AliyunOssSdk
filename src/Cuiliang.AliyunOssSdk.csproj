@@ -1,18 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <Version>0.2.0</Version>
+    <PackageId>aliyun.sdk.oss</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>    
-    <Authors>cuiliang.bj@gmail.com</Authors>
-    <Description>Aliyun oss sdk for dotnet core.</Description>
+    <Description>Aliyun OSS SDK for .NET Core</Description>
     <PackageTags>Aliyun</PackageTags>
-    <RepositoryUrl>https://github.com/cuiliang/Cuiliang.AliyunOssSdk</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Cuiliang</Authors>
+    <PackageProjectUrl>https://github.com/cnblogs/Cuiliang.AliyunOssSdk</PackageProjectUrl>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.1.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
   </ItemGroup>  
 </Project>

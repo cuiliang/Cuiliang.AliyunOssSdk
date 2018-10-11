@@ -15,9 +15,7 @@ namespace Cuiliang.AliyunOssSdk.Entites
     public class ClientConfiguration 
     {
         private const string UserAgentPrefix = "aliyun-sdk-dotnet/";
-        private static readonly string _userAgent = GetDefaultUserAgent();
-
-        
+        private static readonly string _userAgent = GetDefaultUserAgent();        
 
         /// <summary>
         /// HttpWebRequest最大的并发连接数目。
@@ -67,9 +65,7 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// <summary>
         /// 获取或设置请求发生错误时最大的重试次数。
         /// </summary>
-        public int MaxErrorRetry { get; set; } = 3;
-
-        
+        public int MaxErrorRetry { get; set; } = 3;        
 
         /// <summary>
         /// <para>设置自定义基准时间。</para>
@@ -93,7 +89,6 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// </summary>
         public long TickOffset { get; internal set; }
 
-
         /// <summary>
         /// 默认配置
         /// </summary>
@@ -103,7 +98,6 @@ namespace Cuiliang.AliyunOssSdk.Entites
                 return new ClientConfiguration();
             }
         }
-
        
         /// <summary>
         /// 获取User-Agent信息。

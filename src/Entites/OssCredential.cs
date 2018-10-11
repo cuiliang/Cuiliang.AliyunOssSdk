@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace Cuiliang.AliyunOssSdk.Entites
     /// <summary>
     /// Oss访问安全凭据
     /// </summary>
-    public class OssCredential
+    public class OssCredential : IOptions<OssCredential>
     {
         public string AccessKeyId { get; set; }
         public string AccessKeySecret { get; set; }
@@ -24,5 +25,6 @@ namespace Cuiliang.AliyunOssSdk.Entites
         /// 令牌
         /// </summary>
         public string SecurityToken { get; set; }
+        public OssCredential Value => this;
     }
 }

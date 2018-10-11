@@ -21,12 +21,14 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.GetMeta
             return req;
         }
 
-        public override async Task<OssResult<GetObjectMetaResult>> ParseResultAsync(HttpResponseMessage response)
+        public override Task<OssResult<GetObjectMetaResult>> ParseResultAsync(HttpResponseMessage response)
         {
-            return new OssResult<GetObjectMetaResult>(new GetObjectMetaResult()
+            var result = new OssResult<GetObjectMetaResult>(new GetObjectMetaResult()
             {
                 Headers = response.Headers
             });
+
+            return Task.FromResult(result);
         }
     }
 }

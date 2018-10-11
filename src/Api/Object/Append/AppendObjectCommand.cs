@@ -67,7 +67,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Append
             return req;
         }
 
-        public override async Task<OssResult<AppentObjectResult>> ParseResultAsync(HttpResponseMessage response)
+        public override Task<OssResult<AppentObjectResult>> ParseResultAsync(HttpResponseMessage response)
         {
             var result = new AppentObjectResult();
             result.ETag = response.Headers.ETag?.ToString();
@@ -83,7 +83,7 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Append
                 result.HashCrc64Ecma = Convert.ToUInt64(response.Headers.GetValues(HttpHeaders.HashCrc64Ecma).FirstOrDefault());
             }
 
-            return new OssResult<AppentObjectResult>(result);
+            return Task.FromResult(new OssResult<AppentObjectResult>(result));
         }
     }
 }

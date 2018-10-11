@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ using Cuiliang.AliyunOssSdk.Entites;
 using Cuiliang.AliyunOssSdk.Request;
 using Cuiliang.AliyunOssSdk.Utility;
 using Cuiliang.AliyunOssSdk.Utility.Authentication;
+using Microsoft.Extensions.Logging;
 
 namespace Cuiliang.AliyunOssSdk
 {
@@ -29,11 +31,13 @@ namespace Cuiliang.AliyunOssSdk
     {
         private readonly HttpClient _client;
         private readonly RequestContext _requestContext;
+        private readonly ILogger _logger;
 
-        public OssClient(HttpClient client, RequestContext requestContext)
+        public OssClient(HttpClient client, RequestContext requestContext, ILoggerFactory loggerFactory)
         {
             _client = client;
             _requestContext = requestContext;
+            _logger = loggerFactory.CreateLogger<OssClient>();
         }
 
         /// <summary>
@@ -57,7 +61,14 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new PutObjectCommand(_requestContext, bucket, key, file, extraHeaders);
 
-            return await cmd.ExecuteAsync(_client);
+            var result = await cmd.ExecuteAsync(_client);
+
+            if(!result.IsSuccess)
+            {
+                _logger.LogError($"Failed in OssClient.{nameof(PutObjectAsync)}(). \nBucket: {bucket.BucketName}\nPath: {key}");
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -187,7 +198,15 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new DeleteObjectCommand(_requestContext, bucket, key);
 
-            return await cmd.ExecuteAsync(_client);
+            var result  = await cmd.ExecuteAsync(_client);
+
+            if (!result.IsSuccess)
+            {
+                _logger.LogError($"Failed in OssClient.{nameof(PutObjectAsync)}(). \nBucket: {bucket.BucketName}\nPath: {key}");
+            }
+
+            return result;
+
         }
 
         /// <summary>

@@ -19,10 +19,8 @@ namespace Cuiliang.AliyunOssSdk.Api.Bucket.List
 
         public override ServiceRequest BuildRequest()
         {
-            
             var req = new ServiceRequest(BucketInfo.CreateByRegion(_region, ""), "", HttpMethod.Get);
 
-            //
             req.AddParameter(RequestParameters.PREFIX, _request.Prefix);
             req.AddParameter(RequestParameters.MARKER, _request.Marker);
             req.AddParameter(RequestParameters.MAX_KEYS, _request.MaxKeys?.ToString());
