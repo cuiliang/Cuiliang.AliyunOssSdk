@@ -32,18 +32,18 @@ namespace Cuiliang.AliyunOssSdk.Api.Object.Get
             return req;
         }
 
-        public override async Task<OssResult<GetObjectResult>> ParseResultAsync(HttpResponseMessage response)
+        public override  Task<OssResult<GetObjectResult>> ParseResultAsync(HttpResponseMessage response)
         {
             var result = new GetObjectResult();
             result.Headers = response.Headers;
             result.Content = response.Content;
             result.Metadata = Deserialize(response);
 
-            return new OssResult<GetObjectResult>()
+            return Task.FromResult(new OssResult<GetObjectResult>()
             {
                 IsSuccess = true,
                 SuccessResult = result
-            };
+            });
         }
 
         private ObjectMetadata Deserialize(HttpResponseMessage response)
