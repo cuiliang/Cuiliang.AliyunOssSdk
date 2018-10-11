@@ -9,6 +9,8 @@ namespace Cuiliang.AliyunOssSdk.Api.Bucket.Get
     /// <summary>
     /// 返回bucket里的对象
     /// https://help.aliyun.com/document_detail/31965.html?spm=a2c4g.11186623.6.1047.6c233ba9EwUHgb
+    ///
+    /// 参考 ListBucketResult.cs
     /// </summary>
     [XmlRoot("ListBucketResult")]
     public class GetBucketResult
@@ -16,8 +18,8 @@ namespace Cuiliang.AliyunOssSdk.Api.Bucket.Get
         /// <summary>
         /// 保存每个返回Object meta的容器。
         /// </summary>
-        [XmlArrayItem("Contents")]
-        public IList<ObjectMeta> Contents { get; set; }
+        [XmlElement("Contents")]
+        public ObjectMeta[] Contents { get; set; }
 
         /// <summary>
         /// 如果请求中指定了delimiter参数，则在OSS返回的响应中包含CommonPrefixes元素。该元素标明那些以delimiter结尾，并有共同前缀的object名称的集合。
