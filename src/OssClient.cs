@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Cuiliang.AliyunOssSdk.Api;
+using Cuiliang.AliyunOssSdk.Api.Bucket.Get;
 using Cuiliang.AliyunOssSdk.Api.Bucket.List;
 using Cuiliang.AliyunOssSdk.Api.Object.Append;
 using Cuiliang.AliyunOssSdk.Api.Object.Copy;
@@ -47,6 +48,35 @@ namespace Cuiliang.AliyunOssSdk
         {
             var cmd = new ListBucketsCommand(_requestContext, region, new ListBucketsRequest());
             return await cmd.ExecuteAsync(_client);
+        }
+
+        /// <summary>
+        /// 列出bucket下的object
+        /// </summary>
+        /// <param name="bucketInfo"></param>
+        /// <param name="prefix"></param>
+        /// <param name="marker"></param>
+        /// <param name="maxKeys"></param>
+        /// <param name="delimiter"></param>
+        /// <param name="encodingType"></param>
+        /// <returns></returns>
+        public async Task<OssResult<GetBucketResult>> GetBucketAsync(BucketInfo bucketInfo,
+            string prefix,
+            string marker,
+            int maxKeys = 100,
+            string delimiter = "",
+            string encodingType = "url")
+        {
+            var cmd = new GetBucketCommand(_requestContext, bucketInfo, prefix, marker, maxKeys, delimiter, encodingType);
+
+            var result =  await cmd.ExecuteAsync(_client);
+
+            if (!result.IsSuccess)
+            {
+                _logger.LogError($"Failed in OssClient.{nameof(GetBucketAsync)}(). \nBucket: {bucketInfo.BucketName}\n");
+            }
+
+            return result;
         }
 
         /// <summary>
