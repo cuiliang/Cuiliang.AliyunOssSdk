@@ -6,12 +6,12 @@ using Cuiliang.AliyunOssSdk.Request;
 
 namespace Cuiliang.AliyunOssSdk.Api.Bucket.List
 {
-    public class ListBucketCommand: BaseOssCommand<ListBucketsResult>
+    public class ListBucketsCommand: BaseOssCommand<ListBucketsResult>
     {
         private ListBucketsRequest _request;
         private string _region;
 
-        public ListBucketCommand(RequestContext requestContext, string region, ListBucketsRequest request) : base(requestContext)
+        public ListBucketsCommand(RequestContext requestContext, string region, ListBucketsRequest request) : base(requestContext)
         {
             _request = request;
             _region = region;

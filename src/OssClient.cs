@@ -45,7 +45,7 @@ namespace Cuiliang.AliyunOssSdk
         /// <returns></returns>
         public async Task<OssResult<ListBucketsResult>> ListBucketsAsync(string region)
         {
-            var cmd = new ListBucketCommand(_requestContext, region, new ListBucketsRequest());
+            var cmd = new ListBucketsCommand(_requestContext, region, new ListBucketsRequest());
             return await cmd.ExecuteAsync(_client);
         }
 
