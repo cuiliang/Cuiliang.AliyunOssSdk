@@ -71,6 +71,9 @@ OssClient: 对API调用的封装，类似于一个api的索引，方便调用。
 对每个API调用，假设API为XXX，则一般是定义一个XXXXCommand类，此类直接或简介继承于BaseOssCommand类，
 提供构建ServiceRequest对象的逻辑以及根据返回的HttpResponse解析返回结果的逻辑代码。
 
+## 如何增加新的API
+如果你希望增加新的API，可以在合适的目录中定义 ApiNameCommand和ApiNameResult类型，并且在OssClient中增加相应的调用代码即可。
+
 
 ## 变更历史
 0.3.0 
