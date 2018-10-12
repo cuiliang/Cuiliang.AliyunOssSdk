@@ -9,17 +9,35 @@ nuget: https://www.nuget.org/packages/Cuiliang.AliyunOssSdk/
 
 ## 使用方法
 
-
+在appSettings.json中配置参数
 ```
-// 设置认证信息
-var crediential = new OssCredential()
 {
-    AccessKeyId = AccessKeyId,
-    AccessKeySecret = AssessSecret
-};
+    "ossClient": {
+    "AccessKeyId": "您的AccessKeyId",
+    "AccessKeySecret": "您的AccessKeySecret"
+}
+```
 
-//创建Client对象
-var client = new OssClient(crediential);
+在ConfigureServices中注册
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    ~~~
+    services.AddOssClient(Configuration);
+    ~~~
+}
+```
+
+然后在需要的时候注入OssClient对象即可。
+```
+// 注入变量
+public OssManager(OssClient ossClient)
+{
+     client = ossClient;
+    ~~~~
+}
+
+
 
 //调用api
     
@@ -53,3 +71,9 @@ OssClient: 对API调用的封装，类似于一个api的索引，方便调用。
 对每个API调用，假设API为XXX，则一般是定义一个XXXXCommand类，此类直接或简介继承于BaseOssCommand类，
 提供构建ServiceRequest对象的逻辑以及根据返回的HttpResponse解析返回结果的逻辑代码。
 
+
+## 变更历史
+0.3.0 
+    加入GetBucket API支持，用于获取文件列表
+    合并cnblogs fork代码
+    改为使用DI注册而不是直接创建对象

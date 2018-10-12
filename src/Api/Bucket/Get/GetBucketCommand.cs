@@ -26,9 +26,9 @@ namespace Cuiliang.AliyunOssSdk.Api.Bucket.Get
             BucketInfo bucketInfo,
             string prefix,
             string marker,
-            int maxKeys = 100,
-            string delimiter = "",
-            string encodingType = "url"
+            int maxKeys,
+            string delimiter,
+            string encodingType
             ) 
             : base(requestContext)
         {

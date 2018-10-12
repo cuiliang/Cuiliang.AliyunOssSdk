@@ -65,7 +65,7 @@ namespace Cuiliang.AliyunOssSdk
             string marker,
             int maxKeys = 100,
             string delimiter = "",
-            string encodingType = "url")
+            string encodingType = "")
         {
             var cmd = new GetBucketCommand(_requestContext, bucketInfo, prefix, marker, maxKeys, delimiter, encodingType);
 
